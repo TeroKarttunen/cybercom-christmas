@@ -9,6 +9,7 @@ frames1719charmem = $6000
 sprite_0 = $4000 + $2800 ; sprite pointer A0
 sprite_1 = $4000 + $2840 ; sprite pointer A1
 sprite_2 = $4000 + $2880 ; sprite pointer A2
+sprite_3 = $4000 + $28c0 ; sprite pointer A3
 
 screenmem_bank1_1 = $7800
 screenmem_bank1_1_sprite0_pointer = screenmem_bank1_1 + $03f8
@@ -35,13 +36,17 @@ sprite_1_x = $d002
 sprite_1_y = $d003
 sprite_2_x = $d004
 sprite_2_y = $d005
+sprite_3_x = $d006
+sprite_3_y = $d007
 sprite_shared_x = $d010
 sprite_0_color = $d027
 sprite_1_color = $d028
 sprite_2_color = $d029
+sprite_3_color = $d02a
 sprite_shared_color_0 = $d025
 sprite_shared_color_1 = $d026
-
+vertical_sprite_stretch = $d017
+horizontal_sprite_stretch = $d01d 
 
 memory_copy_routines_address = $9000 ; $9000 - $9af0
 short_frames_memory_area = $7000

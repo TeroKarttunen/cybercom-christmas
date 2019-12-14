@@ -42,12 +42,24 @@
 !byte $00,$00,$40,$00,$05,$00,$00,$00
 !byte $00,$00,$00,$00,$00,$00,$00,$87
 
+; sprite 3 / single color
+* = sprite_3 
+!byte $8b,$b3,$28,$da,$2a,$a8,$ab,$b3
+!byte $38,$8a,$2a,$90,$8b,$aa,$90,$00
+!byte $00,$00,$00,$00,$04,$4a,$24,$64
+!byte $4b,$6a,$84,$32,$ae,$44,$4a,$2a
+!byte $20,$4a,$2a,$c4,$00,$00,$00,$00
+!byte $00,$00,$0f,$ff,$80,$38,$00,$e0
+!byte $40,$00,$30,$00,$00,$00,$00,$00
+!byte $00,$00,$00,$00,$00,$00,$00,$01
+
 sprite_counter:
 !by 0
 
 sprite_init:
+  lda #%00001111
+  sta sprite_control_register ; sprites 0-3 on
   lda #%00000111
-  sta sprite_control_register ; sprites 0-2 on
   sta sprite_multicolor_register ; sprites 0-2 are multicolor
   lda #225 ; sprite y coordinates
   sta sprite_0_y
@@ -70,6 +82,18 @@ sprite_init:
   lda #$A2
   sta screenmem_bank1_1_sprite0_pointer + 2
   sta screenmem_bank1_2_sprite0_pointer + 2
+  lda #$A3
+  sta screenmem_bank1_1_sprite0_pointer + 3
+  sta screenmem_bank1_2_sprite0_pointer + 3
+  lda #$02 ; red
+  sta sprite_3_color
+  lda #30
+  sta sprite_3_x
+  lda #100
+  sta sprite_3_y
+  lda #%00001000
+  sta vertical_sprite_stretch
+  sta horizontal_sprite_stretch
   rts
   
 move_sprites:
