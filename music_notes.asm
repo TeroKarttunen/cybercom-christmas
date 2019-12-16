@@ -31,7 +31,7 @@
 !by f_4_l,f_4_h,a_3_l,a_3_h,f_3_l,f_3_h,half,5
 !by b_3_l,b_3_h,b_3_l,b_3_h,b_3_l,b_3_h,quarter,2
 
-!by c_4_l,c_4_h,c_2_l,c_2_h,c_4_l,c_4_h,half,12
+!by c_4_l,c_4_h,c_2_l,c_2_h,c_4_l,c_4_h,half,20
 !by e_4_l,e_4_h,c_3_l,c_3_h,e_4_l,e_4_h,quarter,2
 !by g_4_l,g_4_h,c_3_l,c_3_h,g_4_l,g_4_h,quarter,2
 
@@ -72,7 +72,7 @@
 !by f_4_l,f_4_h,a_3_l,a_3_h,f_3_l,f_3_h,half,5
 !by b_3_l,b_3_h,b_3_l,b_3_h,b_3_l,b_3_h,quarter,2
 
-!by c_4_l,c_4_h,c_2_l,c_2_h,c_4_l,c_4_h,whole,12
+!by c_4_l,c_4_h,c_2_l,c_2_h,c_4_l,c_4_h,whole,20
 
 !by g_3_l,g_3_h,e_3_l,e_3_h,c_3_l,c_3_h,quarter,2
 !by g_3_l,g_3_h,e_3_l,e_3_h,c_3_l,c_3_h,quarter,2
@@ -115,7 +115,7 @@
 !by b_4_l,b_4_h,b_4_l,b_4_h,b_4_l,b_4_h,quarter,2
 !by a_4_l,a_4_h,a_4_l,a_4_h,a_4_l,a_4_h,quarter,2
 
-!by g_4_l,g_4_h,d_4_l,d_4_h,b_3_l,b_3_h,quarter,12
+!by g_4_l,g_4_h,d_4_l,d_4_h,b_3_l,b_3_h,quarter,20
 !by g_4_l,g_4_h,e_4_bis_l,e_4_bis_h,b_3_l,b_3_h,quarter_dot,3
 !by g_4_l,g_4_h,g_4_l,g_4_h,g_4_l,g_4_h,eight,1
 
