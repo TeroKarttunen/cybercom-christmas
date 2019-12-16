@@ -1,6 +1,8 @@
 # cybercom-christmas
 Commodore 64 based holiday greetings demo!
 
+![screenshot](cybercom-christmas-snapshot.bmp "Screenshot")
+
 This directory contains a C64Studio IDE based development project that can be compiled with ACME compiler.
 
 **releases** directory contains pre-built binaries for the project
