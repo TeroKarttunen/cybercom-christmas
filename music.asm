@@ -24,49 +24,8 @@ check_pause:
   rts
 load_note:
   lda music_pointer
-  ;cmp #0
-  ;bne +
-  ;jsr copy_text1
-;+ lda music_pointer
-  ;cmp #9
-  ;bne +
-  ;jsr copy_text2
-;+ lda music_pointer
-  ;cmp #17
-  ;bne +
-  ;jsr copy_text5
-;+ lda music_pointer
-  ;cmp #26
-  ;bne +
-  ;jsr copy_text6
-;+ lda music_pointer
-  ;cmp #34
-  ;bne +
-  ;jsr copy_text3
-;+ lda music_pointer
-  ;cmp #44
-  ;bne +
-  ;jsr copy_text4
-;+ lda music_pointer
-  ;cmp #52
-  ;bne +
-  ;jsr copy_text1
-;+ lda music_pointer
-  ;cmp #62
-  ;bne +
-  ;jsr copy_text2
-;+ lda music_pointer
-  ;cmp #73
-  ;bne +
-  ;jsr copy_text1
-;+ lda music_pointer
-  ;cmp #83
-  ;bne +
-  ;jsr copy_text2
-;+ lda music_pointer
   cmp #122
   beq reset_notes
-;load_note2:
   clc
   adc #1
   sta music_pointer ; music pointer++
@@ -150,7 +109,7 @@ note_length:
 pause:
 !by 0
 
-; tempo = 1 bar = 94
+; tempo = 1 bar = roughly 56-62 frames
 music_data:
 !source "music_notes.asm"
 
@@ -168,7 +127,7 @@ c_3_h = 8
 c_3_l = 97
 d_3_h = 9
 d_3_l = 104
-e_3_bis_h = 9; alku
+e_3_bis_h = 9
 e_3_bis_l = 247
 e_3_h = 10
 e_3_l = 143
@@ -225,29 +184,9 @@ e_5_h = 42
 e_5_l = 62
 
 
-whole = 8 * 9 +1
-half = 4 * 9 +1
-quarter_dot = 3 * 9 +1
-quarter = 2 * 9 +1
-eight = 1 * 9 +1
+whole = 8 * 7 +2
+half = 4 * 7 +2
+quarter_dot = 3 * 7 +2
+quarter = 2 * 7 +2
+eight = 1 * 7 +2
 
-;!by d_4_l,d_4_h,quarter_dot,5 ; 1 bar = 4
-;!by e_4_l,e_4_h,eight,5
-;!by f_4_sharp_l,f_4_sharp_h,quarter,5
-;!by e_4_l,e_4_h,quarter,5
-
-;!by g_4_l,g_4_h,quarter,5 ; 1 bar = 5
-;!by f_4_sharp_l,f_4_sharp_h,quarter,5
-;!by e_4_l,e_4_h,eight,5
-;!by c_4_sharp_l,c_4_sharp_h,eight,5
-;!by d_4_l,d_4_h,quarter,5
-
-;!by b_4_l,b_4_h,quarter,5
-;!by a_4_l,a_4_h,quarter,5
-;!by g_4_l,g_4_h,quarter,5
-;!by f_4_sharp_l,f_4_sharp_h,quarter,5 ; 1 bar = 4
-
-;!by e_4_l,e_4_h,quarter,5
-;!by f_4_sharp_l,f_4_sharp_h,eight,5
-;!by d_4_l,d_4_h,eight,5
-;!by a_4_l,a_4_h,half,5 ; 1 bar = 4

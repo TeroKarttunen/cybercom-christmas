@@ -6,19 +6,23 @@ frames710charmem = $4800
 frames1113charmem = $5000
 frames1416charmem = $5800
 frames1719charmem = $6000
-sprite_0 = $4000 + $2800 ; sprite pointer A0
-sprite_1 = $4000 + $2840 ; sprite pointer A1
-sprite_2 = $4000 + $2880 ; sprite pointer A2
-sprite_3 = $4000 + $28c0 ; sprite pointer A3
 
+sprite_0 = $4000 + $2800 ; location corresponds to sprite pointer A0
+sprite_1 = $4000 + $2840 ; location corresponds to sprite pointer A1
+sprite_2 = $4000 + $2880 ; location corresponds to sprite pointer A2
+sprite_3 = $4000 + $28c0 ; location corresponds to sprite pointer A3
+
+; screen memory addresses
 screenmem_bank1_1 = $7800
 screenmem_bank1_1_sprite0_pointer = screenmem_bank1_1 + $03f8
 screenmem_bank1_2 = $7c00
 screenmem_bank1_2_sprite0_pointer = screenmem_bank1_2 + $03f8
+
+; color memory addresses
 color_memory = $d800
 aux_color_memory = $c000
 
-;memory locations
+; fixed memory locations
 background_color = $d021
 border_color = $d020
 control_register_1 = $d011
@@ -28,8 +32,10 @@ sprite_multicolor_register = $d01c
 vic_bank_select = $dd00
 memory_control_register = $d018
 keyboard_buffer = $dc01
-waiting_for_interrupt = $0052
+custom_interrupt_status = $0052 ; my custom status variable
 current_note_address = $0092 ; 16-bit variable
+
+; fixed sprite control addresses
 sprite_0_x = $d000
 sprite_0_y = $d001
 sprite_1_x = $d002
@@ -48,14 +54,14 @@ sprite_shared_color_1 = $d026
 vertical_sprite_stretch = $d017
 horizontal_sprite_stretch = $d01d 
 
+; program locations in memory
 memory_copy_routines_address = $9000 ; $9000 - $9af0
 short_frames_memory_area = $7000
 music_code = $2800
 
-;first_raster_line = 233
+; raster interrupt lines
 first_raster_line = 220
 second_raster_line = 255
-text_location_at_screenmem = $0400 + 23 * 40 + 3
 
 * = $0801
 ; startup basic code
@@ -68,7 +74,6 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   lda #$01 ; white
   sta background_color
   jsr copy_color_memory
-  ;jsr prepare_screenmem
   ; initialize sid
   jsr initialize_music
   ; set up raster interrupts
@@ -77,7 +82,6 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   and $D011
   sta $D011 ; Clear most significant bit in VIC's raster register
   lda #first_raster_line
-  ;lda #second_raster_line
   sta $D012 ; Set the raster line number where interrupt should occur
   lda #<Irq
   sta $0314
@@ -92,7 +96,7 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   and #$fe ; clear bit 0
   ora #$02 ; set bit 1
   sta vic_bank_select ; select vic bank 1: $4000-$7fff
-  
+  ; initialize sprites
   jsr sprite_init
   
   main_loop:
@@ -102,58 +106,58 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   sta memory_control_register
   lda #%00010000
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010001
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_1
   ; select frames06charmem and screenmem_bank1_2
   lda #$f0 ; %11110000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010010
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_2
   ; select frames06charmem and screenmem_bank1_1
   lda #$e0 ; %11100000
   sta memory_control_register
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010011
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_3
   ; select frames06charmem and screenmem_bank1_2
   lda #$f0 ; %11110000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010100
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_4 
   ; select frames06charmem and screenmem_bank1_1
   lda #$e0 ; %11100000
   sta memory_control_register
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010101
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_5
   ; select frames06charmem and screenmem_bank1_2
   lda #$f0 ; %11110000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010110
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_6 
   ; select frames06charmem and screenmem_bank1_1
   lda #$e0 ; %11100000
   sta memory_control_register
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010111
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   ;; line shift
   jsr copy_frame_7
   ; select frames710charmem and screenmem_bank1_2
@@ -161,58 +165,58 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   sta memory_control_register  
   lda #%00010000
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010001
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_8
   ; select frames710charmem and screenmem_bank1_1
   lda #$e2 ; %11100010
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010010
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_9
   ; select frames710charmem and screenmem_bank1_2
   lda #$f2 ; %11110010
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010011
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_10
   ; select frames710charmem and screenmem_bank1_1
   lda #$e2 ; %11100010
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010100
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_11
   ; select frames1113charmem and screenmem_bank1_2
   lda #$f4 ; %11110100
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010101
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_12
   ; select frames1113charmem and screenmem_bank1_1
   lda #$e4 ; %11100100
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010110
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_13
   ; select frames1113charmem and screenmem_bank1_2
   lda #$f4 ; %11110100
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010111
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   ;; line shift
   jsr copy_frame_14
   ; select frames1416charmem and screenmem_bank1_1
@@ -220,61 +224,58 @@ text_location_at_screenmem = $0400 + 23 * 40 + 3
   sta memory_control_register  
   lda #%00010000
   sta control_register_1
-  jsr press_key  
+  jsr wait_for_interrupt  
   lda #%00010001
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_15
   ; select frames1416charmem and screenmem_bank1_2
   lda #$f6 ; %11110110
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010010
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_16  
   ; select frames1416charmem and screenmem_bank1_1
   lda #$e6 ; %11100110
   sta memory_control_register  
-  jsr press_key  
+  jsr wait_for_interrupt  
   lda #%00010011
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_17
   ; select frames1719charmem and screenmem_bank1_2
   lda #$f8 ; %11111000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010100
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_18  
   ; select frames1719charmem and screenmem_bank1_1
   lda #$e8 ; %11101000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010101
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jsr copy_frame_19
   ; select frames1719charmem and screenmem_bank1_2
   lda #$f8 ; %11111000
   sta memory_control_register  
-  jsr press_key
+  jsr wait_for_interrupt
   lda #%00010110
   sta control_register_1
-  jsr press_key
+  jsr wait_for_interrupt
   jmp main_loop
 
-Irq:
-  ;lda #7
-  ;sta border_color ; Turn screen frame yellow
-  lda waiting_for_interrupt
+Irq: ; interrupt routines
+  lda custom_interrupt_status
   cmp #$02
   beq first_interrupt
-  ;jsr load_state
   lda #$0
-  sta waiting_for_interrupt
+  sta custom_interrupt_status
   lda #$01 ;white
   sta background_color
   jsr music_interrupt
@@ -284,40 +285,25 @@ Irq:
   jmp $EA31 ; Jump into KERNAL's standard interrupt service routine to handle keyboard scan, cursor display etc.
 
 first_interrupt:
-  ;jsr save_state
-  ;jsr save_state
-  ;jsr show_text
   lda #$00 ;black
   sta background_color
   jsr move_sprites
   lda #second_raster_line
   sta $D012 ; Set the raster line number where interrupt should occur
   lda #$1
-  sta waiting_for_interrupt
+  sta custom_interrupt_status
   asl $D019 ; "Acknowledge" the interrupt by clearing the VIC's interrupt flag.
   jmp $EA31 ; Jump into KERNAL's standard interrupt service routine to handle keyboard scan, cursor display etc.
   
-  
-;press_key:
-       ;rts
-       lda keyboard_buffer
-       cmp #$ff
-       beq press_key
--      lda keyboard_buffer
-       cmp #$ff
-       bne -
-       rts
+wait_for_interrupt: ; busy wait loop
+  lda custom_interrupt_status
+  cmp #$00
+  bne wait_for_interrupt
+  lda #$02
+  sta custom_interrupt_status
+  rts
 
-press_key:  
-       ;lda #$00 ; black
-       ;sta border_color 
-       lda waiting_for_interrupt
-       cmp #$00
-       bne press_key
-       lda #$02
-       sta waiting_for_interrupt
-       rts
-
+; character data for each frame
 short_frame_0:
 !by $9,$f6,$2,$3,$4,$5,$6,$7,$8,$0,$0,$0,$0,$0,$0,$0,$a,$b,$c,$d,$e,$f,$10,$11,$12,$0,$0,$0,$0,$0,$0,$0,$0,$0,$13,$14,$15,$16,$17,$18,$19,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 short_frame_1:
